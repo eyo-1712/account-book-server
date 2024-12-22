@@ -4,9 +4,9 @@
   "description": "account-book server",
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "NODE_ENV=production ts-node src/index.ts",
     "build": "tsc",
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "NODE_ENV=development ts-node-dev src/index.ts",
     "lint": "eslint .",
     "format": "prettier --check --cache .",
     "format:fix": "prettier --write --cache .",
@@ -16,6 +16,7 @@
   "keywords": [],
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2"
   },
   "devDependencies": {
