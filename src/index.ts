@@ -7,8 +7,8 @@ import { router } from './router'
 
 dotenv.config({
   path: {
-    development: './.env.development.local',
-    production: './.env.production.local',
+    development: './.env.development',
+    production: './.env.production',
   }[process.env.NODE_ENV!],
 })
 
