@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv'
 import express, { json, urlencoded } from 'express'
 import morgan from 'morgan'
 import { router } from './router'
+import { handleError } from './utils/handle-error'
 
 dotenv.config({
   path: {
@@ -25,7 +26,6 @@ server.use(cors())
 server.use(cookieParser())
 
 server.use('/api', router)
+server.use(handleError)
 
-server.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`)
-})
+server.listen(port)
