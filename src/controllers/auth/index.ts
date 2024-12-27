@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { NextFunction, Request, Response } from 'express'
 import { AppError } from '../../config/app-error'
 import { firebaseAdmin } from '../../config/firebase'
@@ -19,11 +20,17 @@ export const authController: TController = {
       next(new AppError(401, 'idToken is not verified'))
     }
 
+    let user
     try {
-      const user = await firebaseAdmin.auth().getUser(decodedToken?.uid ?? '')
-      next(user)
+      user = await firebaseAdmin.auth().getUser(decodedToken?.uid ?? '')
     } catch (error) {
       next(new AppError(401, 'Authentication failed'))
+    }
+
+    try {
+      // 저장 시도
+    } catch (error) {
+      // 이미 있는
     }
   },
 }
