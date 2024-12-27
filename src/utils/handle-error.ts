@@ -11,7 +11,7 @@ export const handleError = (
 ) => {
   const json: IFailedResponse = {
     message: err.message,
-    stautsCode: err.statusCode,
+    statusCode: err.statusCode,
     success: false,
   }
   res.status(err.statusCode).json(json)

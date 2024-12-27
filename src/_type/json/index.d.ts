@@ -1,6 +1,6 @@
 interface IBaseResponse {
   success: boolean
-  stautsCode: number
+  statusCode: number
 }
 
 export interface IFailedResponse extends IBaseResponse {
