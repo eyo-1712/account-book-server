@@ -46,6 +46,8 @@ export const authController: TController = {
         user = await prisma.user.create({ data: { uid } })
       }
 
+      req.session.id = user.uid
+
       res.status(200).json({
         statusCode: 200,
         success: true,
