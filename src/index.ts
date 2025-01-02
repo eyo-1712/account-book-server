@@ -1,8 +1,11 @@
+import { RedisStore } from 'connect-redis'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import * as dotenv from 'dotenv'
 import express, { json, urlencoded } from 'express'
+import session from 'express-session'
 import morgan from 'morgan'
+import * as redis from 'redis'
 import { router } from './router'
 import { handleError } from './utils/handle-error'
 
@@ -18,6 +21,27 @@ const port = process.env.PORT
 
 if (process.env.NODE_ENV === 'development') {
   server.use(morgan('dev'))
+}
+
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL,
+})
+redisClient.connect().catch(console.error)
+
+const redisStore = new RedisStore({ client: redisClient })
+
+server.use(
+  session({
+    store: redisStore,
+    secret: process.env.SESSION_SECRET ?? '',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true, httpOnly: true },
+  }),
+)
+
+if (process.env.NODE_ENV === 'production') {
+  server.set('trust proxy', 1)
 }
 
 server.use(json())
