@@ -14,5 +14,5 @@ export const handleError = (
     statusCode: err.statusCode,
     success: false,
   }
-  res.status(err.statusCode).json(json)
+  res.status(err?.statusCode ?? 200).json(json)
 }

@@ -26,9 +26,13 @@ server.use(
   session({
     store: redisStore,
     secret: process.env.SESSION_SECRET ?? '',
-    resave: false,
+    resave: true,
     saveUninitialized: false,
-    cookie: { secure: true, httpOnly: true },
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // 1일
+    },
   }),
 )
 

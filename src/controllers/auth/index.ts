@@ -46,7 +46,7 @@ export const authController: TController = {
         user = await prisma.user.create({ data: { uid } })
       }
 
-      req.session.id = user.uid
+      req.session.uid = user.uid
 
       res.status(200).json({
         statusCode: 200,
@@ -56,5 +56,12 @@ export const authController: TController = {
     } catch (error) {
       return next(new AppError(500, 'An unexpected error occurred'))
     }
+  },
+  check: (req: Request, res: Response) => {
+    req.session.uid = '123123'
+    res
+      .status(200)
+      .cookie('account-book-knsn-uid', req.session.uid)
+      .json({ uid: req.session.uid })
   },
 }

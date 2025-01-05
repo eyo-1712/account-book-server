@@ -7,7 +7,8 @@
     "skipLibCheck": true, // 라이브러리 타입 검사를 건너뜀
     "forceConsistentCasingInFileNames": true, // 파일명 대소문자 구분 강제
     "outDir": "./dist", // 컴파일된 JS 파일을 저장할 디렉토리
-    "rootDir": "./src" // 소스 파일 디렉토리
+    "rootDir": "./src", // 소스 파일 디렉토리
+    "typeRoots": ["src/_type", "node_modules/@types"]
   },
   "include": ["src/**/*.ts"], // TypeScript 파일 경로
   "exclude": ["node_modules"] // 제외할 디렉토리
