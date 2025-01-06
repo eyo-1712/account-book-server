@@ -23,14 +23,46 @@ export const summaryControlller: TController = {
       data: summary,
     } as ISuccessResponse<Summary>)
   },
-  fetchMonth: (request: Request, response: Response) => {
-    //
+  fetchMonth: (request: Request, response: Response) => {},
+  fetchDate: async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) => {},
+  modify: async (request: Request, response: Response, next: NextFunction) => {
+    const { body, params } = request
+
+    if (!params?.id) return next(new AppError(400, 'invalid schema'))
+
+    if (!schema.safeParse(body)) {
+      return next(new AppError(400, 'invalid schema'))
+    }
+
+    const summary: Summary = await prisma.summary.update({
+      data: body,
+      where: { id: body.id },
+    })
+
+    response.status(201).json({
+      statusCode: 201,
+      success: true,
+      data: summary,
+    } as ISuccessResponse<Summary>)
   },
-  fetchDate: (request: Request, response: Response) => {
-    //
-  },
-  modify: (request: Request, response: Response) => {},
-  remove: (request: Request, response: Response) => {
-    //
+  remove: async (request: Request, response: Response, next: NextFunction) => {
+    const { params } = request
+
+    if (!params.id) return next(new AppError(400, 'invalid id'))
+
+    const id = parseInt(params.id)
+    if (isNaN(id)) return next(new AppError(400, 'invalid id'))
+
+    const summary = await prisma.summary.delete({ where: { id } })
+
+    response.status(204).json({
+      statusCode: 204,
+      success: true,
+      data: summary,
+    })
   },
 }
