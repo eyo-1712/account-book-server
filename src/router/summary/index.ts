@@ -1,6 +1,6 @@
-import { Router } from 'express'
+import { generateRouterWithAuthMiddleware } from '../../utils/auth-router'
 
-export const summaryRouter = Router()
+export const summaryRouter = generateRouterWithAuthMiddleware()
 
 summaryRouter
   .route('/')

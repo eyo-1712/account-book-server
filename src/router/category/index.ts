@@ -1,6 +1,6 @@
-import { Router } from 'express'
+import { generateRouterWithAuthMiddleware } from '../../utils/auth-router'
 
-export const categoryRouter = Router()
+export const categoryRouter = generateRouterWithAuthMiddleware()
 
 categoryRouter
   .route('/')
