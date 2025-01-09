@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const schema = z.object({
+  uid: z.string(),
   type: z.string(),
   card: z.string().trim().min(1),
   category: z.string().trim().min(1),

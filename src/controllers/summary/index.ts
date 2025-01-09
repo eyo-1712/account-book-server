@@ -9,13 +9,16 @@ import { schema } from './schema'
 
 export const summaryControlller: TController = {
   create: async (request: Request, response: Response, next: NextFunction) => {
-    const { body } = request
+    const { body, session } = request
+    const uid = session.uid
 
-    if (!schema.safeParse(body)) {
+    const data = { ...body, uid }
+
+    if (!schema.safeParse(data)) {
       return next(new AppError(400, 'Invalid schema'))
     }
 
-    const summary: Summary = await prisma.summary.create(body)
+    const summary: Summary = await prisma.summary.create(data)
 
     response.status(201).json({
       statusCode: 201,
@@ -28,9 +31,9 @@ export const summaryControlller: TController = {
     response: Response,
     next: NextFunction,
   ) => {
-    const { query } = request
-
+    const { query, session } = request
     const date = query?.date
+    const uid = session.uid
 
     if (!date) {
       return next(new AppError(400, 'Invalid Date'))
@@ -46,6 +49,7 @@ export const summaryControlller: TController = {
 
     const summaries: Summary[] = await prisma.summary.findMany({
       where: {
+        uid,
         createdAt: {
           gte: new Date(`${year}-${month}-01`),
           lt: new Date(
@@ -62,14 +66,14 @@ export const summaryControlller: TController = {
     } as ISuccessResponse<Summary[]>)
   },
   fetchId: async (request: Request, response: Response, next: NextFunction) => {
-    const {
-      params: { id },
-    } = request
+    const { params, session } = request
+    const uid = session.uid
+    const id = parseInt(params.id)
 
-    if (!id) return next(new AppError(400, 'Invalid Id'))
+    if (isNaN(id)) return next(new AppError(400, 'Invalid Id'))
 
     const summary: Summary | null = await prisma.summary.findFirst({
-      where: { id: parseInt(id) },
+      where: { id, uid },
     })
 
     if (!summary) return next(new AppError(404, 'Not Found'))
@@ -81,9 +85,11 @@ export const summaryControlller: TController = {
     } as ISuccessResponse<Summary>)
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
-    const { body, params } = request
+    const { body, params, session } = request
+    const id = parseInt(params.id)
+    const uid = session.uid
 
-    if (!params?.id) return next(new AppError(400, 'Invalid schema'))
+    if (isNaN(id)) return next(new AppError(400, 'Invalid schema'))
 
     if (!schema.safeParse(body)) {
       return next(new AppError(400, 'Invalid schema'))
@@ -91,7 +97,7 @@ export const summaryControlller: TController = {
 
     const summary: Summary = await prisma.summary.update({
       data: body,
-      where: { id: body.id },
+      where: { id, uid },
     })
 
     response.status(201).json({
@@ -101,14 +107,13 @@ export const summaryControlller: TController = {
     } as ISuccessResponse<Summary>)
   },
   remove: async (request: Request, response: Response, next: NextFunction) => {
-    const { params } = request
-
-    if (!params.id) return next(new AppError(400, 'Invalid ID'))
-
+    const { params, session } = request
     const id = parseInt(params.id)
+    const uid = session.uid
+
     if (isNaN(id)) return next(new AppError(400, 'Invalid ID'))
 
-    const summary = await prisma.summary.delete({ where: { id } })
+    const summary = await prisma.summary.delete({ where: { id, uid } })
 
     response.status(204).json({
       statusCode: 204,
