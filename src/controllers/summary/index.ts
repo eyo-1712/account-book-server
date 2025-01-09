@@ -12,7 +12,7 @@ export const summaryControlller: TController = {
     const { body } = request
 
     if (!schema.safeParse(body)) {
-      return next(new AppError(400, 'invalid schema'))
+      return next(new AppError(400, 'Invalid schema'))
     }
 
     const summary: Summary = await prisma.summary.create(body)
@@ -103,10 +103,10 @@ export const summaryControlller: TController = {
   remove: async (request: Request, response: Response, next: NextFunction) => {
     const { params } = request
 
-    if (!params.id) return next(new AppError(400, 'invalid id'))
+    if (!params.id) return next(new AppError(400, 'Invalid ID'))
 
     const id = parseInt(params.id)
-    if (isNaN(id)) return next(new AppError(400, 'invalid id'))
+    if (isNaN(id)) return next(new AppError(400, 'Invalid ID'))
 
     const summary = await prisma.summary.delete({ where: { id } })
 
