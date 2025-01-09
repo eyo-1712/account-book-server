@@ -1,7 +1,7 @@
 import { Category } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { ISuccessResponse } from '../../_type/json'
-import { AppError } from '../../config/app-error'
+import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
 import { schema } from './schema'
@@ -11,19 +11,14 @@ export const categoryController: TController = {
     const uid = request.session.uid
     const body = request.body
 
-    if (!Array.isArray(body)) {
-      return next(new AppError(400, 'Invalid schema'))
-    }
+    if (!Array.isArray(body)) return next(InvalidSchemaError)
 
     const data = body.map((b) => ({ ...b, uid }))
 
-    if (data.filter((d) => !schema.safeParse(d)).length !== 0) {
-      return next(new AppError(400, 'Invalid schema'))
-    }
+    const condition = data.filter((d) => !schema.safeParse(d)).length !== 0
+    if (condition) return next(InvalidSchemaError)
 
-    const categories = await prisma.category.createMany({
-      data,
-    })
+    const categories = await prisma.category.createMany({ data })
 
     response.status(201).json({
       statusCode: 201,
@@ -49,17 +44,13 @@ export const categoryController: TController = {
     const id = parseInt(params.id)
     const uid = session.uid
 
-    if (isNaN(id)) {
-      return next(new AppError(400, 'Invalid ID'))
-    }
+    if (isNaN(id)) return next(InvalidParamsError)
 
     const category: Category | null = await prisma.category.findUnique({
       where: { id, uid },
     })
 
-    if (!category) {
-      return next(new AppError(400, 'Invalid ID'))
-    }
+    if (!category) return next(InvalidParamsError)
 
     response.status(200).json({
       statusCode: 200,
@@ -72,18 +63,13 @@ export const categoryController: TController = {
     const id = parseInt(request.params.id)
     const uid = request.session.uid
 
-    if (isNaN(id)) {
-      return next(new AppError(400, 'Invalid Params'))
-    }
-    if (!body) {
-      return next(new AppError(400, 'Invalid schema'))
-    }
+    if (isNaN(id)) return next(InvalidParamsError)
+
+    if (!body) return next(InvalidParamsError)
 
     const data = { ...body, uid }
 
-    if (!schema.safeParse(data)) {
-      return next(new AppError(400, 'Invalid schema'))
-    }
+    if (!schema.safeParse(data)) return next(InvalidSchemaError)
 
     const category: Category = await prisma.category.update({
       data,
@@ -101,13 +87,13 @@ export const categoryController: TController = {
     const id = parseInt(params.id)
     const uid = session.uid
 
-    if (isNaN(id)) return next(new AppError(400, 'Invalid Params'))
+    if (isNaN(id)) return next(InvalidParamsError)
 
     const find = await prisma.category.findFirst({
       where: { id, uid },
     })
 
-    if (!find) return next(new AppError(400, 'Invalid Params'))
+    if (!find) return next(InvalidParamsError)
 
     const data = await prisma.category.delete({
       where: { id, uid },

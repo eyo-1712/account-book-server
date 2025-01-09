@@ -2,7 +2,7 @@
 import { Summary } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { ISuccessResponse } from '../../_type/json'
-import { AppError } from '../../config/app-error'
+import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
 import { schema } from './schema'
@@ -14,9 +14,7 @@ export const summaryControlller: TController = {
 
     const data = { ...body, uid }
 
-    if (!schema.safeParse(data)) {
-      return next(new AppError(400, 'Invalid schema'))
-    }
+    if (!schema.safeParse(data)) next(InvalidSchemaError)
 
     const summary: Summary = await prisma.summary.create(data)
 
@@ -35,15 +33,9 @@ export const summaryControlller: TController = {
     const date = query?.date
     const uid = session.uid
 
-    if (!date) {
-      return next(new AppError(400, 'Invalid Date'))
-    }
-    if (typeof date !== 'string') {
-      return next(new AppError(400, 'Invalid Date'))
-    }
-    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(date)) {
-      return next(new AppError(400, 'Invalid Date'))
-    }
+    if (!date) return next(InvalidParamsError)
+    if (typeof date !== 'string') return next(InvalidParamsError)
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(date)) return next(InvalidParamsError)
 
     const [year, month] = date.split('-')
 
@@ -70,13 +62,13 @@ export const summaryControlller: TController = {
     const uid = session.uid
     const id = parseInt(params.id)
 
-    if (isNaN(id)) return next(new AppError(400, 'Invalid Id'))
+    if (isNaN(id)) return next(InvalidParamsError)
 
     const summary: Summary | null = await prisma.summary.findFirst({
       where: { id, uid },
     })
 
-    if (!summary) return next(new AppError(404, 'Not Found'))
+    if (!summary) return next(InvalidParamsError)
 
     response.status(200).json({
       statusCode: 200,
@@ -89,11 +81,9 @@ export const summaryControlller: TController = {
     const id = parseInt(params.id)
     const uid = session.uid
 
-    if (isNaN(id)) return next(new AppError(400, 'Invalid schema'))
+    if (isNaN(id)) return next(InvalidParamsError)
 
-    if (!schema.safeParse(body)) {
-      return next(new AppError(400, 'Invalid schema'))
-    }
+    if (!schema.safeParse(body)) return next(InvalidSchemaError)
 
     const summary: Summary = await prisma.summary.update({
       data: body,
@@ -111,7 +101,7 @@ export const summaryControlller: TController = {
     const id = parseInt(params.id)
     const uid = session.uid
 
-    if (isNaN(id)) return next(new AppError(400, 'Invalid ID'))
+    if (isNaN(id)) return next(InvalidParamsError)
 
     const summary = await prisma.summary.delete({ where: { id, uid } })
 

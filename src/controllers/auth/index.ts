@@ -4,7 +4,11 @@ import { User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { UserRecord } from 'firebase-admin/lib/auth/user-record'
 import { ISuccessResponse } from '../../_type/json'
-import { AppError } from '../../config/app-error'
+import {
+  AuthError,
+  InternalServerError,
+  InvalidQueryError,
+} from '../../config/app-error'
 import { firebaseAdmin } from '../../config/firebase'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
@@ -13,31 +17,25 @@ export const authController: TController = {
   google: async (req: Request, res: Response, next: NextFunction) => {
     const idToken = req.query?.idToken
 
-    if (!idToken) {
-      return next(new AppError(400, 'idToken is required'))
-    }
+    if (!idToken) return next(InvalidQueryError)
 
     let decodedToken
     try {
       decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken as string)
     } catch (error: unknown) {
-      return next(new AppError(401, 'idToken is not verified'))
+      return next(InvalidQueryError)
     }
 
     let user: UserRecord
     try {
       user = await firebaseAdmin.auth().getUser(decodedToken?.uid ?? '')
-      if (!user) {
-        throw ''
-      }
+      if (!user) throw AuthError
     } catch (error) {
-      return next(new AppError(401, 'Authentication failed'))
+      return next(error)
     }
 
     const uid = decodedToken?.uid
-    if (!uid) {
-      return next(new AppError(401, 'Invalid token payload'))
-    }
+    if (!uid) return next(AuthError)
 
     try {
       let user = await prisma.user.findUnique({ where: { uid } })
@@ -54,7 +52,7 @@ export const authController: TController = {
         data: user,
       } as ISuccessResponse<User>)
     } catch (error) {
-      return next(new AppError(500, 'An unexpected error occurred'))
+      return next(InternalServerError)
     }
   },
   check: (req: Request, res: Response) => {
