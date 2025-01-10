@@ -39,3 +39,10 @@ model Category {
   name String
   sort Int 
 }
+
+model Account {
+  id Int @id @default(autoincrement())
+  uid String
+  name String
+  money Int
+}

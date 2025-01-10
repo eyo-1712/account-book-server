@@ -8,14 +8,15 @@ import { schema } from './schema'
 
 export const categoryController: TController = {
   create: async (request: Request, response: Response, next: NextFunction) => {
-    const uid = request.session.uid
-    const body = request.body
+    const { body, session } = request
+    const uid = session.uid
 
     if (!Array.isArray(body)) return next(InvalidSchemaError)
 
     const data = body.map((b) => ({ ...b, uid }))
 
-    const condition = data.filter((d) => !schema.safeParse(d)).length !== 0
+    const condition =
+      data.filter((d) => !schema.safeParse(d).success).length !== 0
     if (condition) return next(InvalidSchemaError)
 
     const categories = await prisma.category.createMany({ data })
