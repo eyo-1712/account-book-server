@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { AppError } from '../config/app-error'
+import { AuthError } from '../config/app-error'
 import { prisma } from '../config/prisma'
 
 export const authMiddleware = async (
@@ -8,11 +8,11 @@ export const authMiddleware = async (
   next: NextFunction,
 ) => {
   const uid = request.session?.uid
-  if (!uid) return next(new AppError(401, 'Unauthorization'))
+  if (!uid) return next(AuthError)
 
   // user 조회
   const find = await prisma.user.findFirst({ where: { uid } })
-  if (!find) return next(new AppError(401, 'Unauthorization'))
+  if (!find) return next(AuthError)
 
   next('route')
 }
