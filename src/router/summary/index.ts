@@ -1,13 +1,14 @@
+import { summaryControlller } from '../../controllers/summary'
 import { generateRouterWithAuthMiddleware } from '../../utils/auth-router'
 
 export const summaryRouter = generateRouterWithAuthMiddleware()
 
 summaryRouter
   .route('/')
-  .get() // query year, query month
-  .post() // create summary
+  .get(summaryControlller.fetchAll) // query year, query month
+  .post(summaryControlller.create) // create summary
 summaryRouter
   .route('/:id')
-  .get() // summary detail info
-  .put() // modify summary
-  .delete() // delete summary
+  .get(summaryControlller.fetchId) // summary detail info
+  .put(summaryControlller.modify) // modify summary
+  .delete(summaryControlller.remove) // delete summary

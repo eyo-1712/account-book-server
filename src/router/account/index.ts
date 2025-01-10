@@ -1,16 +1,17 @@
+import { accountController } from '../../controllers/account'
 import { generateRouterWithAuthMiddleware } from '../../utils/auth-router'
 
 export const accountRouter = generateRouterWithAuthMiddleware()
 
 accountRouter
   .route('/')
-  .get() //  all account info
-  .post() // add  account
+  .get(accountController.fetchAll) //  all account info
+  .post(accountController.create) // add  account
 
 accountRouter
   .route('/:id')
-  .get() //  detail account info
-  .put() // modify account info
-  .delete() // delete account
+  .get(accountController.fetchId) //  detail account info
+  .put(accountController.modify) // modify account info
+  .delete(accountController.remove) // delete account
 
-accountRouter.route('/transfer').post() // transfer account
+accountRouter.route('/transfer').post(accountController.transfer) // transfer account
