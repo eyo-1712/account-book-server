@@ -48,6 +48,7 @@ export const summaryControlller: TController = {
             `${year}-${String(Number(month) + 1).padStart(2, '0')}-01`,
           ),
         },
+        deleted: false,
       },
     })
 
@@ -65,7 +66,7 @@ export const summaryControlller: TController = {
     if (isNaN(id)) return next(InvalidParamsError)
 
     const summary: Summary | null = await prisma.summary.findFirst({
-      where: { id, uid },
+      where: { id, uid, deleted: false },
     })
 
     if (!summary) return next(InvalidParamsError)
@@ -103,7 +104,10 @@ export const summaryControlller: TController = {
 
     if (isNaN(id)) return next(InvalidParamsError)
 
-    const summary = await prisma.summary.delete({ where: { id, uid } })
+    const summary = await prisma.summary.update({
+      where: { id, uid },
+      data: { deleted: true },
+    })
 
     response.status(204).json({
       statusCode: 204,
