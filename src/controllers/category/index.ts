@@ -31,7 +31,7 @@ export const categoryController: TController = {
     const uid = request.session.uid
 
     const categories: Category[] = await prisma.category.findMany({
-      where: { uid },
+      where: { uid, deleted: false },
     })
 
     response.status(200).json({
@@ -48,7 +48,7 @@ export const categoryController: TController = {
     if (isNaN(id)) return next(InvalidParamsError)
 
     const category: Category | null = await prisma.category.findUnique({
-      where: { id, uid },
+      where: { id, uid, deleted: false },
     })
 
     if (!category) return next(InvalidParamsError)
@@ -91,7 +91,7 @@ export const categoryController: TController = {
     if (isNaN(id)) return next(InvalidParamsError)
 
     const find = await prisma.category.findFirst({
-      where: { id, uid },
+      where: { id, uid, deleted: true },
     })
 
     if (!find) return next(InvalidParamsError)
