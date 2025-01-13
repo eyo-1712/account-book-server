@@ -96,8 +96,9 @@ export const categoryController: TController = {
 
     if (!find) return next(InvalidParamsError)
 
-    const data = await prisma.category.delete({
+    const data = await prisma.category.update({
       where: { id, uid },
+      data: { deleted: true },
     })
 
     response.status(204).json({
