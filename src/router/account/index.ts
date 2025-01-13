@@ -5,8 +5,8 @@ export const accountRouter = generateRouterWithAuthMiddleware()
 
 accountRouter
   .route('/')
-  .get(accountController.fetchAll) //  all account info
-  .post(accountController.create) // add  account
+  .get(accountController.fetchAll) // all account info
+  .post(accountController.create) // add account
 
 accountRouter
   .route('/:id')
