@@ -27,7 +27,9 @@ export const accountController: TController = {
   fetchAll: async (request: Request, response: Response) => {
     const uid = request.session.uid
 
-    const accounts = await prisma.account.findMany({ where: { uid } })
+    const accounts = await prisma.account.findMany({
+      where: { uid, deleted: false },
+    })
 
     response.status(200).json({
       data: accounts,
@@ -43,7 +45,7 @@ export const accountController: TController = {
     if (isNaN(id)) return next(InvalidParamsError)
 
     const account: Account | null = await prisma.account.findUnique({
-      where: { id, uid },
+      where: { id, uid, deleted: false },
     })
 
     if (!account) return next(InvalidParamsError)
@@ -85,14 +87,13 @@ export const accountController: TController = {
 
     if (isNaN(id)) return next(InvalidParamsError)
 
-    const find = await prisma.category.findFirst({
-      where: { id, uid },
-    })
+    const find = await prisma.category.findFirst({ where: { id, uid } })
 
     if (!find) return next(InvalidParamsError)
 
-    const data = await prisma.account.delete({
+    const data = await prisma.account.update({
       where: { id, uid },
+      data: { deleted: true },
     })
 
     response.status(204).json({
@@ -113,8 +114,12 @@ export const accountController: TController = {
     if (!transferSchema.safeParse(body).success) return next(InvalidSchemaError)
 
     const [giveAccount, takeAccount] = await Promise.all([
-      prisma.account.findUnique({ where: { id: body.giveId, uid } }),
-      prisma.account.findUnique({ where: { id: body.takeId, uid } }),
+      prisma.account.findUnique({
+        where: { id: body.giveId, uid, deleted: false },
+      }),
+      prisma.account.findUnique({
+        where: { id: body.takeId, uid, deleted: false },
+      }),
     ])
 
     if (!giveAccount || !takeAccount) return next(InvalidSchemaError)
