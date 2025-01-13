@@ -5,7 +5,7 @@ export const summaryRouter = generateRouterWithAuthMiddleware()
 
 summaryRouter
   .route('/')
-  .get(summaryControlller.fetchAll) // query year, query month
+  .get(summaryControlller.fetchMonth) // query year, query month
   .post(summaryControlller.create) // create summary
 summaryRouter
   .route('/:id')

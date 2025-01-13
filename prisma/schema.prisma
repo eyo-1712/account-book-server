@@ -19,6 +19,8 @@ model User {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  deleted Boolean @default(false)
 }
 
 model Summary {
@@ -29,8 +31,11 @@ model Summary {
   category  String
   money     Float
   datetime  DateTime
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  deleted Boolean @default(false)
 }
 
 model Category {
@@ -38,6 +43,8 @@ model Category {
   uid String
   name String
   sort Int 
+
+  deleted Boolean @default(false)
 }
 
 model Account {
@@ -45,4 +52,6 @@ model Account {
   uid String
   name String
   money Int
+  
+  deleted Boolean @default(false)
 }
