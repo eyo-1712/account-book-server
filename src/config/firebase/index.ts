@@ -1,12 +1,16 @@
-import * as dotenv from 'dotenv'
+import dotenv from 'dotenv'
 import admin from 'firebase-admin'
 
-dotenv.config({
-  path: {
-    development: './.env.development',
-    production: './.env.production',
-  }[process.env.NODE_ENV!],
-})
+switch (process.env.NODE_ENV) {
+  case 'development':
+    dotenv.config({ path: '.env.development' })
+
+    break
+
+  case 'production':
+    dotenv.config({ path: '.env.production' })
+    break
+}
 
 export const firebaseAdmin = admin.initializeApp({
   credential: admin.credential.cert({
