@@ -3,6 +3,7 @@ import cors from 'cors'
 import express, { json, urlencoded } from 'express'
 import session from 'express-session'
 import morgan from 'morgan'
+import { UID_KEY } from './config/cookie'
 import { redisStore } from './config/redis'
 import { router } from './router'
 import { handleError } from './utils/handle-error'
@@ -21,10 +22,12 @@ server.use(
     resave: true,
     saveUninitialized: false,
     cookie: {
-      secure: true,
+      // secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // 1일
+      maxAge: 1000 * 60 * 60 * 24, // 1일,
+      signed: true,
     },
+    name: UID_KEY,
   }),
 )
 
@@ -35,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
 server.use(json())
 server.use(urlencoded({ extended: true }))
 server.use(cors())
-server.use(cookieParser())
+server.use(cookieParser(process.env.SESSION_SECRET, {}))
 
 server.use('/api', router)
 server.use(handleError)

@@ -55,11 +55,4 @@ export const authController: TController = {
       return next(InternalServerError)
     }
   },
-  check: (req: Request, res: Response) => {
-    req.session.uid = '123123'
-    res
-      .status(200)
-      .cookie('account-book-knsn-uid', req.session.uid)
-      .json({ uid: req.session.uid })
-  },
 }

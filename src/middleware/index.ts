@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
 import { AuthError } from '../config/app-error'
-import { prisma } from '../config/prisma'
+import { UID_KEY } from '../config/cookie'
+import { redisClient } from '../config/redis'
 
 export const authMiddleware = async (
   request: Request,
   response: Response,
   next: NextFunction,
 ) => {
-  const uid = request.session?.uid
-  if (!uid) return next(AuthError)
+  const uidKey = request.signedCookies[UID_KEY]
+  if (!uidKey) return next(AuthError)
 
-  // user 조회
-  const find = await prisma.user.findFirst({ where: { uid } })
+  const find = await redisClient.get(`s:${uidKey}`)
   if (!find) return next(AuthError)
 
   next('route')
