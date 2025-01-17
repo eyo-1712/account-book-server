@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express, { json, urlencoded } from 'express'
 import session from 'express-session'
+import morgan from 'morgan'
 import { redisStore } from './config/redis'
 import { router } from './router'
 import { handleError } from './utils/handle-error'
@@ -9,9 +10,9 @@ import { handleError } from './utils/handle-error'
 const server = express()
 const port = process.env.PORT
 
-// if (process.env.NODE_ENV === 'development') {
-//   server.use(morgan('dev'))
-// }
+if (process.env.NODE_ENV === 'development') {
+  server.use(morgan('dev'))
+}
 
 server.use(
   session({
