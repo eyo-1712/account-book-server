@@ -11,7 +11,9 @@
     "format": "prettier --check --cache .",
     "format:fix": "prettier --write --cache .",
     "prepare": "husky",
-    "husky": "eslint . && prettier --check --cache ."
+    "husky": "eslint . && prettier --check --cache .",
+    "migrate:prod": "dotenv -e .env.production -- npx prisma migrate dev",
+    "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev"
   },
   "keywords": [],
   "license": "ISC",
@@ -35,6 +37,7 @@
     "@types/express-session": "^1.18.1",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.2",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9.17.0",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
