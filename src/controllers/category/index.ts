@@ -17,13 +17,15 @@ export const categoryController: TController = {
     })
     const lastSort = _category.at(-1)?.sort ?? 0
 
-    const data: Category[] = body.categories.map((b: any, i: number) => ({
-      ...b,
-      uid,
-      sort: lastSort + i + 1,
-    }))
+    const data: Category[] = body.categories.map(
+      ({ name }: { name: string }, i: number) => ({
+        uid,
+        name,
+        sort: lastSort + i + 1,
+      }),
+    )
 
-    const condition = schema.safeParse(data).success
+    const condition = schema.safeParse({ categories: data }).success
     if (!condition) return next(InvalidSchemaError)
 
     const categories = await prisma.category.createMany({ data })
