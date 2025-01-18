@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Category } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
-import { ISuccessResponse } from '../../_type/json'
+import { SuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
@@ -34,7 +34,7 @@ export const categoryController: TController = {
       statusCode: 201,
       success: true,
       data: categories.count,
-    } as ISuccessResponse<number>)
+    } as SuccessResponse<number>)
   },
   fetchAll: async (request: Request, response: Response) => {
     const uid = request.session.uid
@@ -47,7 +47,7 @@ export const categoryController: TController = {
       statusCode: 200,
       success: true,
       data: categories,
-    } as ISuccessResponse<Category[]>)
+    } as SuccessResponse<Category[]>)
   },
   fetchId: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
@@ -66,7 +66,7 @@ export const categoryController: TController = {
       statusCode: 200,
       success: true,
       data: category,
-    } as ISuccessResponse<Category>)
+    } as SuccessResponse<Category>)
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
     const body = request.body
@@ -90,7 +90,7 @@ export const categoryController: TController = {
       statusCode: 201,
       success: true,
       data: category,
-    } as ISuccessResponse<Category>)
+    } as SuccessResponse<Category>)
   },
   remove: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
@@ -114,6 +114,6 @@ export const categoryController: TController = {
       statusCode: 204,
       success: true,
       data,
-    } as ISuccessResponse<Category>)
+    } as SuccessResponse<Category>)
   },
 }

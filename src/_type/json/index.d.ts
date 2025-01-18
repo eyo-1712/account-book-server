@@ -1,14 +1,14 @@
-interface IBaseResponse {
+interface BaseResponse {
   success: boolean
   statusCode: number
 }
 
-export interface IFailedResponse extends IBaseResponse {
+export interface FailedResponse extends BaseResponse {
   success: false
   message: string
 }
 
-export interface ISuccessResponse<T> extends IBaseResponse {
+export interface SuccessResponse<T> extends BaseResponse {
   success: true
   data: T
 }

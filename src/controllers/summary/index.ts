@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Summary } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
-import { ISuccessResponse } from '../../_type/json'
+import { SuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
@@ -22,7 +22,7 @@ export const summaryControlller: TController = {
       statusCode: 201,
       success: true,
       data: summary,
-    } as ISuccessResponse<Summary>)
+    } as SuccessResponse<Summary>)
   },
   fetchMonth: async (
     request: Request,
@@ -56,7 +56,7 @@ export const summaryControlller: TController = {
       statusCode: 200,
       success: true,
       data: summaries,
-    } as ISuccessResponse<Summary[]>)
+    } as SuccessResponse<Summary[]>)
   },
   fetchId: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
@@ -75,7 +75,7 @@ export const summaryControlller: TController = {
       statusCode: 200,
       success: true,
       data: summary as Summary,
-    } as ISuccessResponse<Summary>)
+    } as SuccessResponse<Summary>)
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
     const { body, params, session } = request
@@ -95,7 +95,7 @@ export const summaryControlller: TController = {
       statusCode: 201,
       success: true,
       data: summary,
-    } as ISuccessResponse<Summary>)
+    } as SuccessResponse<Summary>)
   },
   remove: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request

@@ -1,6 +1,6 @@
 import { Account } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
-import { ISuccessResponse } from '../../_type/json'
+import { SuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
@@ -21,7 +21,7 @@ export const accountController: TController = {
       success: true,
       statusCode: 201,
       data,
-    } as ISuccessResponse<Account>)
+    } as SuccessResponse<Account>)
   },
   fetchAll: async (request: Request, response: Response) => {
     const uid = request.session.uid
@@ -34,7 +34,7 @@ export const accountController: TController = {
       data: accounts,
       statusCode: 200,
       success: true,
-    } as ISuccessResponse<Account[]>)
+    } as SuccessResponse<Account[]>)
   },
   fetchId: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
@@ -53,7 +53,7 @@ export const accountController: TController = {
       statusCode: 200,
       success: true,
       data: account,
-    } as ISuccessResponse<Account>)
+    } as SuccessResponse<Account>)
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
     const body = request.body
@@ -77,7 +77,7 @@ export const accountController: TController = {
       statusCode: 201,
       success: true,
       data: account,
-    } as ISuccessResponse<Account>)
+    } as SuccessResponse<Account>)
   },
   remove: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
@@ -99,7 +99,7 @@ export const accountController: TController = {
       statusCode: 204,
       success: true,
       data,
-    } as ISuccessResponse<Account>)
+    } as SuccessResponse<Account>)
   },
   // 송금
   transfer: async (
@@ -139,6 +139,6 @@ export const accountController: TController = {
       data,
       statusCode: 201,
       success: true,
-    } as ISuccessResponse<Account[]>)
+    } as SuccessResponse<Account[]>)
   },
 }

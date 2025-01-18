@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { NextFunction, Request, Response } from 'express'
-import { IFailedResponse } from '../_type/json'
+import { FailedResponse } from '../_type/json'
 import { AppError } from '../config/app-error'
 
 export const handleError = (
@@ -9,7 +9,7 @@ export const handleError = (
   res: Response,
   next: NextFunction,
 ) => {
-  const json: IFailedResponse = {
+  const json: FailedResponse = {
     message: err.message,
     statusCode: err.statusCode,
     success: false,

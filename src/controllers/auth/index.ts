@@ -3,7 +3,7 @@
 import { User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { UserRecord } from 'firebase-admin/lib/auth/user-record'
-import { ISuccessResponse } from '../../_type/json'
+import { SuccessResponse } from '../../_type/json'
 import {
   AuthError,
   InternalServerError,
@@ -50,7 +50,7 @@ export const authController: TController = {
         statusCode: 200,
         success: true,
         data: user,
-      } as ISuccessResponse<User>)
+      } as SuccessResponse<User>)
     } catch (error) {
       return next(InternalServerError)
     }
