@@ -95,7 +95,7 @@ export const categoryController: TController = {
     if (isNaN(id)) return next(InvalidParamsError)
 
     const find = await prisma.category.findFirst({
-      where: { id, uid, deleted: true },
+      where: { id, uid, deleted: false },
     })
 
     if (!find) return next(InvalidParamsError)
