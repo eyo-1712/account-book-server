@@ -6,6 +6,11 @@ const category = z.object({
   sort: z.number(),
 })
 
-export const schema = z.object({
+export const createSchema = z.object({
   categories: category.array(),
+})
+
+export const modifySchema = z.object({
+  id: z.string(),
+  name: z.string(),
 })

@@ -5,7 +5,7 @@ import { SuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
-import { schema } from './schema'
+import { createSchema, modifySchema } from './schema'
 
 export const categoryController: TController = {
   create: async (request: Request, response: Response, next: NextFunction) => {
@@ -25,7 +25,7 @@ export const categoryController: TController = {
       }),
     )
 
-    const condition = schema.safeParse({ categories: data }).success
+    const condition = createSchema.safeParse({ categories: data }).success
     if (!condition) return next(InvalidSchemaError)
 
     const categories = await prisma.category.createMany({ data })
@@ -70,20 +70,15 @@ export const categoryController: TController = {
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
     const body = request.body
-    const id = parseInt(request.params.id)
     const uid = request.session.uid
-
-    if (isNaN(id)) return next(InvalidParamsError)
 
     if (!body) return next(InvalidParamsError)
 
-    const data = { ...body, uid }
-
-    if (!schema.safeParse(data)) return next(InvalidSchemaError)
+    if (!modifySchema.safeParse(body)) return next(InvalidSchemaError)
 
     const category: Category = await prisma.category.update({
-      data,
-      where: { id },
+      data: { name: body.name },
+      where: { id: body.id, uid },
     })
 
     response.status(201).json({
