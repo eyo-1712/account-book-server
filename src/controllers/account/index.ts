@@ -3,9 +3,8 @@ import { NextFunction, Request, Response } from 'express'
 import { ISuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
-import { transferSchema } from '../category/schema'
 import { TController } from '../type'
-import { schema } from './schema'
+import { schema, transferSchema } from './schema'
 
 export const accountController: TController = {
   create: async (request: Request, response: Response, next: NextFunction) => {

@@ -13,7 +13,12 @@ export const categoryController: TController = {
 
     if (!Array.isArray(body)) return next(InvalidSchemaError)
 
-    const data = body.map((b) => ({ ...b, uid }))
+    const _category: Category[] = await prisma.category.findMany({
+      where: { uid, deleted: false },
+    })
+
+    const lastSort = _category.at(-1)?.sort ?? 0
+    const data = body.map((b, i) => ({ ...b, uid, sort: lastSort + i + 1 }))
 
     const condition =
       data.filter((d) => !schema.safeParse(d).success).length !== 0

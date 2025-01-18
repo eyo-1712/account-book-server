@@ -44,6 +44,9 @@ model Category {
   name String
   sort Int 
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   deleted Boolean @default(false)
 }
 
@@ -52,6 +55,9 @@ model Account {
   uid String
   name String
   money Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
   deleted Boolean @default(false)
 }

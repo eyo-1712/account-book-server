@@ -5,9 +5,3 @@ export const schema = z.object({
   name: z.string(),
   sort: z.number(),
 })
-
-export const transferSchema = z.object({
-  giveId: z.number(),
-  takeId: z.number(),
-  money: z.number(),
-})
