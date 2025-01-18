@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Category } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { ISuccessResponse } from '../../_type/json'
@@ -11,18 +12,19 @@ export const categoryController: TController = {
     const { body, session } = request
     const uid = session.uid
 
-    if (!Array.isArray(body)) return next(InvalidSchemaError)
-
     const _category: Category[] = await prisma.category.findMany({
       where: { uid, deleted: false },
     })
-
     const lastSort = _category.at(-1)?.sort ?? 0
-    const data = body.map((b, i) => ({ ...b, uid, sort: lastSort + i + 1 }))
 
-    const condition =
-      data.filter((d) => !schema.safeParse(d).success).length !== 0
-    if (condition) return next(InvalidSchemaError)
+    const data: Category[] = body.categories.map((b: any, i: number) => ({
+      ...b,
+      uid,
+      sort: lastSort + i + 1,
+    }))
+
+    const condition = schema.safeParse(data).success
+    if (!condition) return next(InvalidSchemaError)
 
     const categories = await prisma.category.createMany({ data })
 
