@@ -4,7 +4,7 @@ import { SuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
-import { createSchema, schema, transferSchema } from './schema'
+import { createSchema, transferSchema, updateSchema } from './schema'
 
 export const accountController: TController = {
   create: async (request: Request, response: Response, next: NextFunction) => {
@@ -57,20 +57,20 @@ export const accountController: TController = {
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
     const body = request.body
-    const id = parseInt(request.params.id)
+
     const uid = request.session.uid
 
-    if (isNaN(id)) return next(InvalidParamsError)
+    if (!body.id) return next(InvalidParamsError)
 
     if (!body) return next(InvalidParamsError)
 
     const data = { ...body, uid }
 
-    if (!schema.safeParse(data)) return next(InvalidSchemaError)
+    if (!updateSchema.safeParse(data)) return next(InvalidSchemaError)
 
     const account: Account = await prisma.account.update({
       data,
-      where: { id },
+      where: { id: body.id, uid },
     })
 
     response.status(201).json({

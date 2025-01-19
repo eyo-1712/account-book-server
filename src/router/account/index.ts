@@ -7,7 +7,7 @@ accountRouter
   .route('/')
   .get(accountController.fetchAll) // all account info
   .post(accountController.create) // add account
-  .put(accountController.modify) // modify account info
+  .patch(accountController.modify) // modify account info
 
 accountRouter
   .route('/:id')

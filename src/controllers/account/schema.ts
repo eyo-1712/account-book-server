@@ -7,8 +7,8 @@ export const createSchema = z.object({
   money: z.number(),
 })
 
-export const schema = z.object({
-  uid: z.string().min(1),
+export const updateSchema = z.object({
+  id: z.number(),
   number: z.string().regex(/^[\d-]+$/),
   name: z.string(),
   money: z.number(),
