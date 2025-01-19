@@ -4,18 +4,18 @@ import { SuccessResponse } from '../../_type/json'
 import { InvalidParamsError, InvalidSchemaError } from '../../config/app-error'
 import { prisma } from '../../config/prisma'
 import { TController } from '../type'
-import { schema, transferSchema } from './schema'
+import { createSchema, schema, transferSchema } from './schema'
 
 export const accountController: TController = {
   create: async (request: Request, response: Response, next: NextFunction) => {
     const { body, session } = request
     const uid = session.uid
 
-    const validation = !schema.safeParse({ ...body, uid }).success
+    const validation = createSchema.safeParse({ ...body, uid }).success
 
     if (!validation) return next(InvalidSchemaError)
 
-    const data = await prisma.account.create({ ...body, uid })
+    const data = await prisma.account.create({ data: { ...body, uid } })
 
     response.status(201).json({
       success: true,

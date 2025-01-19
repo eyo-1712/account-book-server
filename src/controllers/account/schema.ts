@@ -1,7 +1,15 @@
 import { z } from 'zod'
 
+export const createSchema = z.object({
+  uid: z.string().min(1),
+  number: z.string().regex(/^[\d-]+$/),
+  name: z.string(),
+  money: z.number(),
+})
+
 export const schema = z.object({
   uid: z.string().min(1),
+  number: z.string().regex(/^[\d-]+$/),
   name: z.string(),
   money: z.number(),
 })

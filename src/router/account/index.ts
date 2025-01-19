@@ -7,11 +7,11 @@ accountRouter
   .route('/')
   .get(accountController.fetchAll) // all account info
   .post(accountController.create) // add account
+  .put(accountController.modify) // modify account info
 
 accountRouter
   .route('/:id')
   .get(accountController.fetchId) //  detail account info
-  .put(accountController.modify) // modify account info
   .delete(accountController.remove) // delete account
 
 accountRouter.route('/transfer').post(accountController.transfer) // transfer account

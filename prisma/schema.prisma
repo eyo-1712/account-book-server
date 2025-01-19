@@ -26,6 +26,7 @@ model User {
 model Summary {
   id        Int      @id @default(autoincrement())
   uid       String
+
   type      String
   card      String
   category  String
@@ -41,6 +42,7 @@ model Summary {
 model Category {
   id Int @id @default(autoincrement())
   uid String
+
   name String
   sort Int 
 
@@ -53,6 +55,8 @@ model Category {
 model Account {
   id Int @id @default(autoincrement())
   uid String
+
+  number String
   name String
   money Int
 
