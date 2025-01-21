@@ -55,4 +55,17 @@ export const authController: TController = {
       return next(InternalServerError)
     }
   },
+  info: async (request: Request, response: Response, next: NextFunction) => {
+    const { session } = request
+    const uid = session.uid
+
+    const info = await prisma.user.findUnique({ where: { uid } })
+    if (!info) return next(AuthError)
+
+    response.status(200).json({
+      success: true,
+      statusCode: 200,
+      data: info,
+    } as SuccessResponse<User>)
+  },
 }

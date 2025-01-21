@@ -24,7 +24,7 @@ server.use(
     cookie: {
       // secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // 1일,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7일,
       signed: true,
     },
     name: UID_KEY,
