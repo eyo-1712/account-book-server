@@ -14,4 +14,4 @@ accountRouter
   .get(accountController.fetchId) //  detail account info
   .delete(accountController.remove) // delete account
 
-accountRouter.route('/transfer').post(accountController.transfer) // transfer account
+accountRouter.route('/transfer').patch(accountController.transfer) // transfer account
