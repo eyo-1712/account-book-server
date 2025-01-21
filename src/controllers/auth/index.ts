@@ -14,8 +14,8 @@ import { prisma } from '../../config/prisma'
 import { TController } from '../type'
 
 export const authController: TController = {
-  google: async (req: Request, res: Response, next: NextFunction) => {
-    const idToken = req.query?.idToken
+  google: async (request: Request, response: Response, next: NextFunction) => {
+    const idToken = request.query?.idToken
 
     if (!idToken) return next(InvalidQueryError)
 
@@ -44,9 +44,9 @@ export const authController: TController = {
         user = await prisma.user.create({ data: { uid } })
       }
 
-      req.session.uid = user.uid
+      request.session.uid = user.uid
 
-      res.status(200).json({
+      response.status(200).json({
         statusCode: 200,
         success: true,
         data: user,
@@ -61,6 +61,8 @@ export const authController: TController = {
 
     const info = await prisma.user.findUnique({ where: { uid } })
     if (!info) return next(AuthError)
+
+    request.session.uid = info.uid
 
     response.status(200).json({
       success: true,
