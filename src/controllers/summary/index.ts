@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Summary } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { SuccessResponse } from '../../_type/json'

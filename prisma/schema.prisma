@@ -28,7 +28,7 @@ model Summary {
   uid       String
 
   type      String
-  card      String
+  account   String
   category  String
   money     Float
   datetime  DateTime
