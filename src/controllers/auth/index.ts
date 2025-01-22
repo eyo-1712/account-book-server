@@ -59,7 +59,9 @@ export const authController: TController = {
     const { session } = request
     const uid = session.uid
 
-    const info = await prisma.user.findUnique({ where: { uid } })
+    const info = await prisma.user.findUnique({
+      where: { uid, deleted: false },
+    })
     if (!info) return next(AuthError)
 
     request.session.uid = info.uid
