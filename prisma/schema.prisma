@@ -28,10 +28,14 @@ model Summary {
   uid       String
 
   type      String
-  account   String
-  category  String
-  money     Float
+  money     Int
   datetime  DateTime
+
+  acocunt Account @relation(fields: [accountId], references: [id])
+  accountId   Int
+
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,6 +50,8 @@ model Category {
   name String
   sort Int 
 
+  summaries Summary[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -59,6 +65,8 @@ model Account {
   number String
   name String
   money Int
+
+  summaries Summary[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
