@@ -15,7 +15,7 @@ export const summaryControlller: TController = {
 
     if (!schema.safeParse(data)) return next(InvalidSchemaError)
 
-    const summary: Summary = await prisma.summary.create(data)
+    const summary: Summary = await prisma.summary.create({ data })
 
     response.status(201).json({
       statusCode: 201,
