@@ -30,7 +30,7 @@ export const summaryControlller: TController = {
   ) => {
     const { query, session } = request
     const year = query?.year
-    const month = query?.month
+    const month = `${query?.month}`.padStart(2, '0')
     const uid = session.uid
 
     if (!year || !month) return next(InvalidParamsError)
@@ -49,6 +49,8 @@ export const summaryControlller: TController = {
         },
         deleted: false,
       },
+      include: { category: true },
+      orderBy: { createdAt: 'desc' },
     })
 
     response.status(200).json({
