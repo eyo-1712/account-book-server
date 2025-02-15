@@ -29,14 +29,14 @@ export const summaryControlller: TController = {
     next: NextFunction,
   ) => {
     const { query, session } = request
-    const date = query?.date
+    const year = query?.year
+    const month = query?.month
     const uid = session.uid
 
-    if (!date) return next(InvalidParamsError)
-    if (typeof date !== 'string') return next(InvalidParamsError)
-    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(date)) return next(InvalidParamsError)
-
-    const [year, month] = date.split('-')
+    if (!year || !month) return next(InvalidParamsError)
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(`${year}-${month}`)) {
+      return next(InvalidParamsError)
+    }
 
     const summaries: Summary[] = await prisma.summary.findMany({
       where: {
