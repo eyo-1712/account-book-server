@@ -29,7 +29,7 @@ model Summary {
 
   type      String
   money     Int
-  datetime  String
+  datetime  DateTime
 
   account Account @relation(fields: [accountId], references: [id])
   accountId   Int

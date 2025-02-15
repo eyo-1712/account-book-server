@@ -11,7 +11,7 @@ export const summaryControlller: TController = {
     const { body, session } = request
     const uid = session.uid
 
-    const data = { ...body, uid }
+    const data = { ...body, uid, datetime: new Date(body.datetime) }
 
     if (!schema.safeParse(data)) return next(InvalidSchemaError)
 
