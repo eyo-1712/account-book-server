@@ -13,7 +13,7 @@ export const summaryControlller: TController = {
 
     const data = { ...body, uid }
 
-    if (!schema.safeParse(data)) next(InvalidSchemaError)
+    if (!schema.safeParse(data)) return next(InvalidSchemaError)
 
     const summary: Summary = await prisma.summary.create(data)
 
