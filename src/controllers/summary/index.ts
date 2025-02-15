@@ -38,15 +38,24 @@ export const summaryControlller: TController = {
       return next(InvalidParamsError)
     }
 
+    const lt = new Date(
+      parseInt(year as string, 10),
+      parseInt(month as string, 10),
+      1,
+    )
+    const gte = new Date(
+      parseInt(year as string, 10),
+      parseInt(month as string, 10) - 1,
+      1,
+    )
+
+    console.log(lt)
+    console.log(gte)
+
     const summaries: Summary[] = await prisma.summary.findMany({
       where: {
         uid,
-        createdAt: {
-          gte: new Date(`${year}-${month}-01`),
-          lt: new Date(
-            `${year}-${String(Number(month) + 1).padStart(2, '0')}-01`,
-          ),
-        },
+        datetime: { gte, lt },
         deleted: false,
       },
       include: { category: true },
