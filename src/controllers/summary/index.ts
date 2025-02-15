@@ -58,7 +58,7 @@ export const summaryControlller: TController = {
         datetime: { gte, lt },
         deleted: false,
       },
-      include: { category: true },
+      include: { category: true, account: true },
       orderBy: { createdAt: 'desc' },
     })
 
