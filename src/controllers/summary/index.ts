@@ -53,11 +53,7 @@ export const summaryControlller: TController = {
     console.log(gte)
 
     const summaries: Summary[] = await prisma.summary.findMany({
-      where: {
-        uid,
-        datetime: { gte, lt },
-        deleted: false,
-      },
+      where: { uid, datetime: { gte, lt }, deleted: false },
       include: { category: true, account: true },
       orderBy: { createdAt: 'desc' },
     })
@@ -77,6 +73,7 @@ export const summaryControlller: TController = {
 
     const summary: Summary | null = await prisma.summary.findFirst({
       where: { id, uid, deleted: false },
+      include: { category: true, account: true },
     })
 
     if (!summary) return next(InvalidParamsError)
