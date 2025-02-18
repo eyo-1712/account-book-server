@@ -48,14 +48,10 @@ export const summaryControlller: TController = {
       parseInt(month as string, 10) - 1,
       1,
     )
-
-    console.log(lt)
-    console.log(gte)
-
     const summaries: Summary[] = await prisma.summary.findMany({
       where: { uid, datetime: { gte, lt }, deleted: false },
       include: { category: true, account: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { datetime: 'desc' },
     })
 
     response.status(200).json({
