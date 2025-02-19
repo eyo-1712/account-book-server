@@ -90,7 +90,7 @@ export const summaryControlller: TController = {
     if (!schema.safeParse(body)) return next(InvalidSchemaError)
 
     const summary: Summary = await prisma.summary.update({
-      data: body,
+      data: { ...body, datetime: new Date(body.datetime) },
       where: { id, uid },
     })
 
