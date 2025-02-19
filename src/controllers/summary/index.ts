@@ -81,8 +81,8 @@ export const summaryControlller: TController = {
     } as SuccessResponse<Summary>)
   },
   modify: async (request: Request, response: Response, next: NextFunction) => {
-    const { body, params, session } = request
-    const id = parseInt(params.id)
+    const { body, session } = request
+    const id = body.id
     const uid = session.uid
 
     if (isNaN(id)) return next(InvalidParamsError)

@@ -7,8 +7,9 @@ summaryRouter
   .route('/')
   .get(summaryControlller.fetchMonth) // query year, query month
   .post(summaryControlller.create) // create summary
+  .put(summaryControlller.modify) // modify summary
+
 summaryRouter
   .route('/:id')
   .get(summaryControlller.fetchId) // summary detail info
-  .put(summaryControlller.modify) // modify summary
   .delete(summaryControlller.remove) // delete summary
