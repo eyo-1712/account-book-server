@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,62 +8,53 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  uid String @unique
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  deleted Boolean @default(false)
+  id        String   @id @default(uuid()) // UUID로 id 설정
+  uid       String   @unique              // 고유 uid
+  createdAt DateTime @default(now())      // 생성일
+  updatedAt DateTime @updatedAt          // 수정일
+  deleted   Boolean  @default(false)      // 삭제 여부
 }
 
 model Summary {
-  id        Int      @id @default(autoincrement())
-  uid       String
+  id        String   @id @default(uuid()) // UUID로 id 설정
+  uid       String   // 사용자 UID
+  type      String   // 유형 (expenditure, income 등)
+  money     Int      // 금액
+  datetime  DateTime // 날짜 시간
 
-  type      String
-  money     Int
-  datetime  DateTime
+  account   Account  @relation(fields: [accountId], references: [id]) // Account와 관계 설정
+  accountId String   // Account ID
 
-  account Account @relation(fields: [accountId], references: [id])
-  accountId   Int
+  category  Category @relation(fields: [categoryId], references: [id]) // Category와 관계 설정
+  categoryId String  // Category ID
 
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  deleted Boolean @default(false)
+  createdAt DateTime @default(now())   // 생성일
+  updatedAt DateTime @updatedAt       // 수정일
+  deleted   Boolean  @default(false)   // 삭제 여부
 }
 
 model Category {
-  id Int @id @default(autoincrement())
-  uid String
+  id        String    @id @default(uuid()) // UUID로 id 설정
+  uid       String    // 사용자 UID
+  name      String    // 카테고리 이름
+  sort      Int       // 정렬 값
+  summaries Summary[] // 관련된 Summary
 
-  name String
-  sort Int 
-
-  summaries Summary[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  deleted Boolean @default(false)
+  createdAt DateTime  @default(now()) // 생성일
+  updatedAt DateTime  @updatedAt     // 수정일
+  deleted   Boolean   @default(false) // 삭제 여부
 }
 
 model Account {
-  id Int @id @default(autoincrement())
-  uid String
+  id        String    @id @default(uuid()) // UUID로 id 설정
+  uid       String    // 사용자 UID
+  number    String    // 계좌 번호
+  name      String    // 계좌 이름
+  money     Int       // 잔액
 
-  number String
-  name String
-  money Int
+  summaries Summary[] // 관련된 Summary
 
-  summaries Summary[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  deleted Boolean @default(false)
+  createdAt DateTime  @default(now()) // 생성일
+  updatedAt DateTime  @updatedAt     // 수정일
+  deleted   Boolean   @default(false) // 삭제 여부
 }
