@@ -15,7 +15,18 @@ export const summaryControlller: TController = {
 
     if (!schema.safeParse(data)) return next(InvalidSchemaError)
 
-    const summary: Summary = await prisma.summary.create({ data })
+    const [summary] = await prisma.$transaction([
+      prisma.summary.create({ data }),
+      prisma.account.update({
+        where: { id: body.accountId }, // body에 accountId가 있다고 가정
+        data: {
+          money:
+            body.type === 'expenditure'
+              ? { decrement: body.money }
+              : { increment: body.money },
+        },
+      }),
+    ])
 
     response.status(201).json({
       statusCode: 201,
@@ -150,10 +161,39 @@ export const summaryControlller: TController = {
 
     if (!schema.safeParse(body)) return next(InvalidSchemaError)
 
-    const summary: Summary = await prisma.summary.update({
-      data: { ...body, datetime: new Date(body.datetime) },
-      where: { id, uid },
-    })
+    const summary = await prisma
+      .$transaction(async (prisma) => {
+        const _summary = await prisma.summary.findUnique({
+          where: { id, uid },
+        })
+
+        if (!_summary) {
+          throw new Error('Summary not found')
+        }
+
+        // 이전과 새 값 비교
+        const moneyDifference = body.money - _summary.money
+
+        const updatedSummary = await prisma.summary.update({
+          where: { id, uid },
+          data: { ...body, datetime: new Date(body.datetime) },
+        })
+
+        await prisma.account.update({
+          where: { id: updatedSummary.accountId },
+          data: {
+            money:
+              moneyDifference > 0
+                ? { increment: moneyDifference }
+                : { decrement: Math.abs(moneyDifference) },
+          },
+        })
+
+        return updatedSummary
+      })
+      .catch((err) => {
+        return next(err) // 트랜잭션에서 에러가 나면 처리
+      })
 
     response.status(201).json({
       statusCode: 201,
