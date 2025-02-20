@@ -52,8 +52,6 @@ export const summaryControlller: TController = {
       }
     })()
 
-    console.log(WHERE)
-
     const summaries: Summary[] = await prisma.summary.findMany({
       where: {
         uid,
