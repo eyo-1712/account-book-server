@@ -9,7 +9,7 @@ summaryRouter
   .post(summaryControlller.create) // create summary
   .put(summaryControlller.modify) // modify summary
 
-summaryRouter.route(`/topic`).get(summaryControlller.fetchTopic)
+summaryRouter.route(`/topic/:topic`).get(summaryControlller.fetchTopic)
 
 summaryRouter
   .route('/:id')

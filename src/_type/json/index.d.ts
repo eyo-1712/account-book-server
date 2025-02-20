@@ -11,4 +11,5 @@ export interface FailedResponse extends BaseResponse {
 export interface SuccessResponse<T> extends BaseResponse {
   success: true
   data: T
+  hasNext?: boolean
 }
