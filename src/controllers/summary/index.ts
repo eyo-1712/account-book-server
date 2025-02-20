@@ -28,7 +28,7 @@ export const summaryControlller: TController = {
     response: Response,
     next: NextFunction,
   ) => {
-    const take = 2
+    const take = 10
     const { params, query, session } = request
     const topic = params?.topic as string
     const topicId = parseInt(query.topicId as string, 10)
@@ -52,12 +52,25 @@ export const summaryControlller: TController = {
       }
     })()
 
+    const lastSummary = lastId
+      ? await prisma.summary.findUnique({ where: { id: lastId } })
+      : null
+
+    if (lastId && !lastSummary) {
+      return next(InvalidParamsError)
+    }
+
     const summaries: Summary[] = await prisma.summary.findMany({
       where: {
         uid,
         deleted: false,
         ...WHERE,
-        ...(lastId ? { id: { lt: lastId } } : {}),
+        ...(lastId
+          ? {
+              datetime: { lt: new Date(lastSummary!.datetime) },
+              id: { not: lastSummary!.id },
+            }
+          : {}),
       },
       include: { category: true, account: true },
       orderBy: { datetime: 'desc' },
