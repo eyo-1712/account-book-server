@@ -42,13 +42,9 @@ export const summaryControlller: TController = {
     const take = 10
     const { params, query, session } = request
     const topic = params?.topic as string
-    const topicId = parseInt(query.topicId as string, 10)
+    const topicId = query.topicId as string
     const uid = session.uid
-    const lastId = parseInt(query.lastId as string, 10)
-
-    if (isNaN(topicId)) {
-      return next(InvalidParamsError)
-    }
+    const lastId = query.lastId as string
 
     if (!['categoryId', 'accountId'].includes(topic)) {
       return next(InvalidParamsError)
@@ -135,9 +131,7 @@ export const summaryControlller: TController = {
   fetchId: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
     const uid = session.uid
-    const id = parseInt(params.id)
-
-    if (isNaN(id)) return next(InvalidParamsError)
+    const id = params.id
 
     const summary: Summary | null = await prisma.summary.findFirst({
       where: { id, uid, deleted: false },
@@ -201,12 +195,11 @@ export const summaryControlller: TController = {
       data: summary,
     } as SuccessResponse<Summary>)
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   remove: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
-    const id = parseInt(params.id)
+    const id = params.id
     const uid = session.uid
-
-    if (isNaN(id)) return next(InvalidParamsError)
 
     const summary = await prisma.summary.update({
       where: { id, uid },

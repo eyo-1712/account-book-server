@@ -38,10 +38,8 @@ export const accountController: TController = {
   },
   fetchId: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
-    const id = parseInt(params.id)
+    const id = params.id
     const uid = session.uid
-
-    if (isNaN(id)) return next(InvalidParamsError)
 
     const account: Account | null = await prisma.account.findUnique({
       where: { id, uid, deleted: false },
@@ -81,10 +79,8 @@ export const accountController: TController = {
   },
   remove: async (request: Request, response: Response, next: NextFunction) => {
     const { params, session } = request
-    const id = parseInt(params.id)
+    const id = params.id
     const uid = session.uid
-
-    if (isNaN(id)) return next(InvalidParamsError)
 
     const find = await prisma.category.findFirst({ where: { id, uid } })
 
