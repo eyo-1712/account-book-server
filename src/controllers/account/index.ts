@@ -112,28 +112,36 @@ export const accountController: TController = {
 
     if (!transferSchema.safeParse(body).success) return next(InvalidSchemaError)
 
-    const [giveAccount, takeAccount] = await Promise.all([
-      prisma.account.findUnique({
-        where: { id: body.giveId, uid, deleted: false },
-      }),
-      prisma.account.findUnique({
-        where: { id: body.takeId, uid, deleted: false },
-      }),
-    ])
+    const data = await prisma
+      .$transaction(async (prisma) => {
+        const [giveAccount, takeAccount] = await Promise.all([
+          prisma.account.findUnique({
+            where: { id: body.giveId, uid, deleted: false },
+          }),
+          prisma.account.findUnique({
+            where: { id: body.takeId, uid, deleted: false },
+          }),
+        ])
 
-    if (!giveAccount || !takeAccount) return next(InvalidSchemaError)
-    if (giveAccount.money < body.money) return next(InvalidSchemaError)
+        if (!giveAccount || !takeAccount) return next(InvalidParamsError)
+        if (giveAccount.money < body.money) return next(InvalidParamsError)
 
-    const data = await Promise.all([
-      prisma.account.update({
-        where: { uid, id: body.giveId },
-        data: { money: { decrement: body.money } },
-      }),
-      prisma.account.update({
-        where: { uid, id: body.takeId },
-        data: { money: { increment: body.money } },
-      }),
-    ])
+        const [updatedGiveAccount, updatedTakeAccount] = await Promise.all([
+          prisma.account.update({
+            where: { uid, id: body.giveId },
+            data: { money: { decrement: body.money } },
+          }),
+          prisma.account.update({
+            where: { uid, id: body.takeId },
+            data: { money: { increment: body.money } },
+          }),
+        ])
+
+        return [updatedGiveAccount, updatedTakeAccount]
+      })
+      .catch((err) => {
+        return next(err) // 트랜잭션에서 에러가 발생하면 처리
+      })
 
     response.status(201).json({
       data,
