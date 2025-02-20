@@ -8,14 +8,14 @@ export const createSchema = z.object({
 })
 
 export const updateSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   number: z.string().regex(/^[\d-]+$/),
   name: z.string(),
   money: z.number(),
 })
 
 export const transferSchema = z.object({
-  giveId: z.number(),
-  takeId: z.number(),
+  giveId: z.string(),
+  takeId: z.string(),
   money: z.number(),
 })
