@@ -46,7 +46,6 @@ export const summaryControlller: TController = {
     const WHERE = (() => {
       switch (topic) {
         case 'categoryId':
-          console.log(topicId)
           return { categoryId: topicId }
         case 'accountId':
           return { accountId: topicId }
