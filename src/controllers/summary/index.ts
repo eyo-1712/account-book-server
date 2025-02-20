@@ -23,6 +23,52 @@ export const summaryControlller: TController = {
       data: summary,
     } as SuccessResponse<Summary>)
   },
+  fetchTopic: async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    const { params, query, session } = request
+    const topic = params?.topic as string
+    const topicId = parseInt(query.topicId as string, 10)
+    const uid = session.uid
+    const lastId = parseInt(query.lastId as string, 10)
+
+    if (isNaN(topicId)) {
+      return next(InvalidParamsError)
+    }
+
+    if (['categoryId', 'accountId'].includes(topic)) {
+      return next(InvalidParamsError)
+    }
+
+    const WHERE = (() => {
+      switch (topic) {
+        case 'categoryId':
+          return { categoryId: topicId }
+        case 'accountId':
+          return { accountId: topicId }
+      }
+    })()
+
+    const summaries: Summary[] = await prisma.summary.findMany({
+      where: {
+        uid,
+        deleted: false,
+        ...WHERE,
+        ...(lastId ? { id: { lt: lastId } } : {}),
+      },
+      include: { category: true, account: true },
+      orderBy: { datetime: 'desc' },
+      take: 10,
+    })
+
+    response.status(200).json({
+      statusCode: 200,
+      success: true,
+      data: summaries,
+    } as SuccessResponse<Summary[]>)
+  },
   fetchMonth: async (
     request: Request,
     response: Response,
